@@ -1,0 +1,144 @@
+# FreelanceFlow - Cursor Rules
+
+## PROJECT OVERVIEW
+FreelanceFlow is a full-stack freelancer finance management app.
+It helps freelancers manage clients, invoices, payments and expenses.
+Monorepo structure with /client (React) and /server (Node.js).
+
+## TECH STACK
+### Frontend (/client)
+- React 18 with TypeScript (strict mode)
+- Tailwind CSS for styling (no inline styles, no CSS modules)
+- Zustand for global state management
+- React Router v6 for navigation
+- Axios for API calls (always use axios instance from client/src/lib/axios.ts)
+- Recharts for all charts
+- React Hot Toast for notifications
+- date-fns for date formatting
+- lucide-react for icons only
+
+### Backend (/server)
+- Node.js with Express and TypeScript
+- Prisma ORM for all database operations
+- SQLite in development, PostgreSQL in production
+- JWT authentication (access token 15min + refresh token 7days)
+- bcrypt for password hashing (salt rounds: 12)
+- Zod for all request validation
+- helmet.js for security headers
+- express-rate-limit for rate limiting
+- cors restricted to frontend URL only
+
+## CODING RULES - NEVER BREAK THESE
+
+### General
+- Always use TypeScript, never plain JavaScript
+- Never use 'any' type
+- All shared types go in /shared/types.ts
+- Always handle errors with try/catch
+- Never hardcode values, use environment variables
+- Never expose stack traces to client
+- Always return proper HTTP status codes
+
+### Frontend Rules
+- All components in /client/src/components
+- All pages in /client/src/pages
+- All API calls in /client/src/services
+- All Zustand stores in /client/src/store
+- Always show loading states while fetching
+- Always show empty states when no data
+- Always validate forms before submitting
+- Use skeleton loaders not spinners
+- Mobile first responsive design
+- Never use localStorage for sensitive data
+- Never use dangerouslySetInnerHTML
+
+### Backend Rules
+- All routes in /server/src/routes
+- All business logic in /server/src/services
+- Always validate with Zod before processing
+- Never expose password in any response
+- Always filter by userId for data security
+- Always paginate list endpoints
+- Rate limit: 50 attempts/15min development, 5/15min production
+
+## NAMING CONVENTIONS
+- Components: PascalCase (ClientCard.tsx)
+- Files/folders: kebab-case (client-service.ts)
+- Variables/functions: camelCase (getClientById)
+- Constants: UPPER_SNAKE_CASE (MAX_INVOICE_ITEMS)
+- Database models: PascalCase (Client, Invoice)
+- API routes: kebab-case (/api/clients, /api/invoices)
+
+## FOLDER STRUCTURE
+FreelanceFlow/
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   └── types/
+├── server/
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── middleware/
+│   │   ├── lib/
+│   │   └── validators/
+├── shared/
+│   └── types.ts
+└── .cursorrules
+
+## UI DESIGN RULES
+- Font: Inter from Google Fonts
+- Primary color: Indigo (#4F46E5)
+- Success/Income: Green (#10B981)
+- Danger/Expense: Red (#EF4444)
+- Warning/Pending: Amber (#F59E0B)
+- Light mode background: #F8FAFC
+- Dark mode background: #0F172A
+- Cards: rounded-2xl shadow-sm border
+- Buttons: rounded-xl
+- Inputs: rounded-xl with focus ring indigo
+- Support dark mode on every component
+- Smooth transitions 300ms
+
+## FREELANCEFLOW SPECIFIC RULES
+- All money amounts stored in CENTS (integer) in database
+- Display amounts formatted with currency symbol
+- Support these currencies: MAD, USD, EUR, GBP
+- Invoice numbers format: INV-2026-001
+- Invoice statuses: DRAFT, SENT, PAID, OVERDUE, CANCELLED
+- Client statuses: ACTIVE, INACTIVE
+- Date format display: MMM DD, YYYY
+- Date format API: ISO 8601
+
+## SECURITY RULES
+- JWT in httpOnly cookies only
+- CORS only for frontend URL
+- Rate limiting on all endpoints
+- Helmet.js on all responses
+- Sanitize all inputs
+- Never expose database IDs in errors
+- bcrypt salt rounds minimum 12
+
+## WHEN ADDING NEW FEATURES
+1. Prisma model/migration first
+2. Zod validator second
+3. Service function third
+4. Route fourth
+5. Frontend service fifth
+6. Component/page last
+Always backend first, then frontend.
+
+## WHAT TO AVOID
+- Never use class components
+- Never use Redux (use Zustand)
+- Never use moment.js (use date-fns)
+- Never use fetch() directly (use axios instance)
+- Never skip error handling
+- Never commit .env files
+- Never use && to chain commands in PowerShell
+- Never add duplicate imports

@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  /* Light mode */
+  --color-background: #F0F9FF;
+  --color-card: #FFFFFF;
+  --color-sidebar: #FFFFFF;
+  --color-primary: #0EA5E9;
+  --color-primary-dark: #0284C7;
+  --color-accent: #06B6D4;
+  --color-text-primary: #0C1A2E;
+  --color-text-secondary: #64748B;
+  --color-border: #E0F2FE;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  /* Dark mode (use with dark: prefix) */
+  --color-dark-bg: #0C1A2E;
+  --color-dark-card: #132338;
+  --color-dark-sidebar: #0F1F33;
+  --color-dark-primary: #38BDF8;
+  --color-dark-accent: #22D3EE;
+  --color-dark-text: #E0F2FE;
+  --color-dark-muted: #94A3B8;
+  --color-dark-border: #1E3A5F;
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+    transition: background-color 300ms ease, color 300ms ease;
+  }
+  body {
+    @apply bg-background text-text-primary dark:bg-dark-bg dark:text-dark-text;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-primary) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 200ms ease-out;
+}
+
+/* RTL adjustments for Arabic */
+[dir="rtl"] .sidebar {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .main-content {
+  padding-right: 260px;
+  padding-left: 0;
+}
+
+[dir="rtl"] {
+  text-align: right;
+}

@@ -1,0 +1,139 @@
+// Prisma schema for FreelanceFlow (PostgreSQL - production)
+// Use: prisma generate --schema=prisma/schema.postgresql.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  name                  String
+  password              String
+  businessName          String?
+  logoUrl               String?
+  currency              String    @default("USD")
+  plan                  String    @default("TRIAL")
+  trialStartDate        DateTime  @default(now())
+  trialEndDate          DateTime?
+  subscriptionStatus    String    @default("ACTIVE")
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  stripeCustomerId      String?
+  trialUsed             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  clients    Client[]
+  invoices   Invoice[]
+  payments   Payment[]
+  expenses   Expense[]
+  auditLogs  AuditLog[]
+}
+
+model TrialEmail {
+  id     String   @id @default(cuid())
+  email  String   @unique
+  usedAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  resource   String
+  resourceId String?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  address   String?
+  currency  String   @default("USD")
+  status    String   @default("ACTIVE")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+  payments Payment[]
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  userId        String
+  clientId      String
+  invoiceNumber String   @unique
+  status        String
+  issueDate     DateTime
+  dueDate       DateTime
+  subtotal      Int
+  tax           Int
+  total         Int
+  notes         String?
+  currency      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client  Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  items   InvoiceItem[]
+  payments Payment[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Int
+  unitPrice   Int
+  total       Int
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  userId    String
+  clientId  String
+  invoiceId String?
+  amount    Int
+  currency  String
+  date      DateTime
+  method    String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  amount    Int
+  category  String
+  date      DateTime
+  notes     String?
+  receipt   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
