@@ -4,3 +4,5 @@ dist
 .DS_Store
 *.db
 prisma/dev.db
+server/uploads/logos/*
+!server/uploads/logos/.gitkeep

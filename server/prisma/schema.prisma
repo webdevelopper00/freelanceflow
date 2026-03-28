@@ -4,8 +4,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Prisma requires a literal `provider`; DATABASE_PROVIDER in .env documents the intended engine (e.g. postgresql).
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
